@@ -592,19 +592,19 @@
 
         <!-- Navigation Tabs -->
         <div class="tabs">
-            <button class="tab-btn active" data-tab="patcher-panel">
-                PATCHER
+            <button class="tab-btn" data-tab="patcher-panel">
+                PATCH
             </button>
             <button class="tab-btn" data-tab="converter-panel">
-                CONVERTER
+                CONVERT
             </button>
-            <button class="tab-btn" data-tab="comparator-panel">
-                COMPARATOR
+            <button class="tab-btn active" data-tab="comparator-panel">
+                COMPARE
             </button>
         </div>
 
         <!-- TAB 1: PATCHER PANEL -->
-        <div id="patcher-panel" class="tab-panel active">
+        <div id="patcher-panel" class="tab-panel">
             <div class="form-group">
                 <label>Target DTS or DTB (Base)</label>
                 <div class="file-upload-zone" id="target-upload-zone">
@@ -676,7 +676,7 @@
 
 
         <!-- TAB 4: COMPARATOR PANEL -->
-        <div id="comparator-panel" class="tab-panel">
+        <div id="comparator-panel" class="tab-panel active">
             <div class="editor-layout">
                 <!-- File Input Col A -->
                 <div style="flex: 1; min-width: 0;">
@@ -701,48 +701,55 @@
                 </div>
             </div>
 
-            <div style="margin-top: 1.5rem; display: flex; align-items: center; gap: 1rem;">
-                <div style="flex: 1;">
+            <div class="editor-layout" style="margin-top: 1rem; align-items: flex-end;">
+                <div style="flex: 2;">
                     <label>Comparison Mode</label>
-                    <select id="compareMode"
-                        style="width: 100%; margin-top: 0.5rem; background: var(--bg-hard); color: var(--fg); border: 1px solid var(--border); border-radius: 4px; padding: 0.5rem 1rem; font-family: inherit; outline: none; cursor: pointer;">
+                    <select id="compareMode" style="width: 100%; background: var(--bg-hard); color: var(--text-hi); border: 1px solid var(--border); border-radius: 4px; padding: 0.6rem 1rem; font-family: 'IBM Plex Mono', monospace; font-size: 0.8rem; outline: none; cursor: pointer;">
                         <option value="diff">Line-by-Line DTS Text Diff</option>
-                        <option value="changelog">Properties &amp; Values Logical Changelog</option>
+                        <option value="changelog" selected>Properties &amp; Values Logical Changelog</option>
                     </select>
                 </div>
-            </div>
-
-            <div id="ignorePhandlesContainer"
-                style="margin-top: 1rem; display: none; align-items: center; gap: 0.5rem;">
-                <input type="checkbox" id="ignorePhandles" checked style="cursor: pointer; width: auto; margin: 0;">
-                <label for="ignorePhandles"
-                    style="cursor: pointer; user-select: none; margin: 0; font-size: 0.85rem; color: var(--fg-dim);">Ignore
-                    compiler phandle properties</label>
+                <div id="ignorePhandlesContainer" style="flex: 1; display: flex; align-items: center; gap: 0.5rem; padding: 0.6rem 0;">
+                    <input type="checkbox" id="ignorePhandles" style="cursor: pointer; width: auto; margin: 0;">
+                    <label for="ignorePhandles" style="cursor: pointer; user-select: none; margin: 0; font-size: 0.75rem; color: var(--text);">Ignore compiler phandles</label>
+                </div>
             </div>
 
             <button id="compareBtn" class="btn" style="margin-top: 1.5rem;" disabled>Compare Device Trees</button>
 
             <!-- Comparison Result (hidden initially) -->
-            <div id="compare-workspace" style="display: none; margin-top: 1.5rem;">
-                <div class="tracker-card">
-                    <div class="editor-layout" style="gap: 2rem; margin-bottom: 1rem;">
-                        <div style="flex: 1;">
-                            <span class="patch-title" style="color: var(--yellow);">Device Tree A:</span>
-                            <div class="tracker-stats" id="stats-a"></div>
-                        </div>
-                        <div style="flex: 1;">
-                            <span class="patch-title" style="color: var(--yellow);">Device Tree B:</span>
-                            <div class="tracker-stats" id="stats-b"></div>
-                        </div>
-                    </div>
-                    <button id="downloadCompareReportBtn" class="btn-secondary" style="width: 100%;">Download Comparison
-                        Report</button>
+            <div id="compare-workspace" style="display: none; margin-top: 2.5rem; border-top: 1px dashed var(--border); padding-top: 2rem;">
+                
+                <!-- Submode Tabs -->
+                <div style="display: flex; gap: 0; margin-bottom: 1.5rem; border: 1px solid var(--border); border-radius: 4px; overflow: hidden; font-family: 'IBM Plex Mono', monospace; font-size: 0.8rem;">
+                    <button id="modeReadBtn" style="flex: 1; padding: 0.7rem; border: none; background: var(--yellow); color: var(--bg-hard); cursor: pointer; font-weight: bold; text-transform: uppercase; transition: all 0.2s;">Compare / Read Only</button>
+                    <button id="modeMergeBtn" style="flex: 1; padding: 0.7rem; border: none; background: var(--bg-hard); color: var(--text); border-left: 1px solid var(--border); cursor: pointer; font-weight: bold; text-transform: uppercase; transition: all 0.2s;">Generate &amp; Merge</button>
                 </div>
 
-                <label id="compare-result-title" style="margin-top: 1.5rem; display: block;">DTS Line-by-Line
-                    Differences</label>
-                <div id="compare-diff-view" class="terminal-container"
-                    style="height: 400px; min-height: 150px; resize: vertical; overflow: auto; padding: 1rem; font-family: 'IBM Plex Mono', monospace; font-size: 0.75rem; line-height: 1.5; background: var(--bg-hard); border: 1px solid var(--border); white-space: pre-wrap; word-break: break-all;">
+                <div class="tracker-card" style="margin-bottom: 1.5rem; padding: 1rem;">
+                    <div class="editor-layout" style="gap: 1.5rem;">
+                        <div style="flex: 1;">
+                            <span class="patch-title" style="color: var(--yellow); font-size: 0.75rem;">Device Tree A:</span>
+                            <div class="tracker-stats" id="stats-a" style="font-size: 0.7rem;"></div>
+                        </div>
+                        <div style="flex: 1;">
+                            <span class="patch-title" style="color: var(--yellow); font-size: 0.75rem;">Device Tree B:</span>
+                            <div class="tracker-stats" id="stats-b" style="font-size: 0.7rem;"></div>
+                        </div>
+                    </div>
+                    <button id="downloadCompareReportBtn" class="btn-secondary" style="width: 100%; margin-top: 1rem; padding: 0.5rem; font-size: 0.75rem;">Download Comparison Report</button>
+                </div>
+
+                <div id="merge-controls" style="display: none; margin-bottom: 1.5rem; gap: 0.5rem; flex-wrap: wrap; background: var(--bg-hard); padding: 0.75rem; border-radius: 4px; border: 1px dashed var(--yellow);">
+                    <div style="display: flex; gap: 0.5rem; flex: 1; min-width: 250px;">
+                        <button id="selectAllABtn" class="btn-secondary" style="flex: 1; padding: 0.6rem; background: var(--surface); color: var(--text-hi); border: 1px solid var(--border); border-radius: 4px; cursor: pointer; font-size: 0.75rem;">Select All A</button>
+                        <button id="selectAllBBtn" class="btn-secondary" style="flex: 1; padding: 0.6rem; background: var(--surface); color: var(--text-hi); border: 1px solid var(--border); border-radius: 4px; cursor: pointer; font-size: 0.75rem;">Select All B</button>
+                    </div>
+                    <button id="generateMergedBtn" class="btn" style="flex: 1; min-width: 200px; padding: 0.6rem; background: var(--green); color: var(--bg-hard); border: 1px solid var(--green); border-radius: 4px; font-weight: bold; cursor: pointer; font-size: 0.8rem;">Generate Merged File</button>
+                </div>
+
+                <label id="compare-result-title" style="display: block; font-size: 0.85rem; color: var(--yellow); margin-bottom: 0.5rem;">DTS Line-by-Line Differences</label>
+                <div id="compare-diff-view" class="terminal-container" style="height: 400px; min-height: 150px; resize: vertical; overflow: auto; padding: 1rem; font-family: 'IBM Plex Mono', monospace; font-size: 0.75rem; line-height: 1.5; background: var(--bg-hard); border: 1px solid var(--border); white-space: pre-wrap; word-break: break-all; margin-top: 0;">
                     <!-- Diff details here -->
                 </div>
             </div>
@@ -750,7 +757,7 @@
 
 
         <!-- Terminal Output -->
-        <div class="terminal-container">
+        <div class="terminal-container" style="margin-top: 2.5rem; margin-bottom: 1rem;">
             <div class="terminal-header">
                 <div class="terminal-dots">
                     <div class="dot"></div>
@@ -763,12 +770,14 @@
             <div id="log">Ready. Select files to begin.</div>
         </div>
 
-        <!-- Footer -->
-        <footer>
-            TreePatcher © 2026 | Powered by Emscripten WebAssembly DTC<br>
-            Special thanks to <a href="https://github.com/lcdyk0517/lcdyk0517.github.io/blob/main/tools"
-                target="_blank">lcdyk0517</a>
-        </footer>
+    </div>
+
+    <!-- Footer -->
+    <footer>
+        TreePatcher © 2026 | Powered by Emscripten WebAssembly DTC<br>
+        Special thanks to <a href="https://github.com/lcdyk0517/lcdyk0517.github.io/blob/main/tools"
+            target="_blank">lcdyk0517</a>
+    </footer>
     </div>
 
     <!-- Main Logic Script -->
@@ -1153,6 +1162,8 @@
         let compaFileData = null;
         let compbFileData = null;
         let compReport = '';
+        let currentBaseDTS = '';
+        window.pendingMerges = [];
 
         const compaInput = document.getElementById('compaFile');
         const compaZone = document.getElementById('compa-upload-zone');
@@ -1384,7 +1395,49 @@
         }
 
         const compareBtn = document.getElementById('compareBtn');
-        compareBtn.addEventListener('click', async () => {
+
+        let comparatorSubMode = 'read';
+        const modeReadBtn = document.getElementById('modeReadBtn');
+        const modeMergeBtn = document.getElementById('modeMergeBtn');
+        const compareModeSelect = document.getElementById('compareMode');
+
+        modeReadBtn.addEventListener('click', () => {
+            comparatorSubMode = 'read';
+            modeReadBtn.style.background = 'var(--yellow)';
+            modeReadBtn.style.color = 'var(--bg-hard)';
+            modeMergeBtn.style.background = 'var(--bg-hard)';
+            modeMergeBtn.style.color = 'var(--text)';
+            if (document.getElementById('compare-workspace').style.display === 'block') {
+                compareBtn.click();
+            }
+        });
+
+        modeMergeBtn.addEventListener('click', () => {
+            comparatorSubMode = 'merge';
+            modeMergeBtn.style.background = 'var(--yellow)';
+            modeMergeBtn.style.color = 'var(--bg-hard)';
+            modeReadBtn.style.background = 'var(--bg-hard)';
+            modeReadBtn.style.color = 'var(--text)';
+
+            // Change to changelog mode for merge
+            compareModeSelect.value = 'changelog';
+            compareModeSelect.dispatchEvent(new Event('change'));
+
+            if (document.getElementById('compare-workspace').style.display === 'block') {
+                compareBtn.click();
+            }
+        });
+
+        compareBtn.addEventListener('click', async (e) => {
+            // Reset to read mode on explicit compare trigger
+            if (e && e.isTrusted && comparatorSubMode !== 'read') {
+                comparatorSubMode = 'read';
+                modeReadBtn.style.background = 'var(--yellow)';
+                modeReadBtn.style.color = 'var(--bg-hard)';
+                modeMergeBtn.style.background = 'var(--bg-hard)';
+                modeMergeBtn.style.color = 'var(--text)';
+            }
+
             if (!compaFileData || !compbFileData) return;
 
             clearLog();
@@ -1413,12 +1466,25 @@
 
                 const mode = document.getElementById('compareMode').value;
                 const diffView = document.getElementById('compare-diff-view');
+                const mergeControls = document.getElementById('merge-controls');
                 diffView.innerHTML = '';
 
                 let reportLines = [];
                 let changeCount = 0;
+                let diffIdCounter = 0;
+                window.pendingMerges = [];
+                currentBaseDTS = dtsA;
 
                 if (mode === 'changelog') {
+                    if (comparatorSubMode === 'merge') {
+                        mergeControls.style.display = 'flex';
+                    } else {
+                        mergeControls.style.display = 'none';
+                    }
+                    diffView.style.display = 'grid';
+                    diffView.style.gridTemplateColumns = 'repeat(auto-fill, minmax(280px, 1fr))';
+                    diffView.style.gap = '0.5rem';
+                    diffView.style.alignItems = 'start';
                     document.getElementById('compare-result-title').textContent = 'Properties & Values Logical Changelog';
                     log('Parsing Device Tree structures...');
                     const astA = parseDTS(dtsA);
@@ -1434,6 +1500,47 @@
                     reportLines.push(`File A (Base):      ${compaFileData.name} (${sizeA} bytes) | MD5: ${md5A}`);
                     reportLines.push(`File B (Reference): ${compbFileData.name} (${sizeB} bytes) | MD5: ${md5B}`);
                     reportLines.push(`------------------------------------------\n`);
+
+                    function addDiffUI(title, valADisplay, valBDisplay, applyBFunc) {
+                        const diffId = diffIdCounter++;
+
+                        window.pendingMerges.push({
+                            id: diffId,
+                            applyB: applyBFunc
+                        });
+
+                        const item = document.createElement('div');
+                        item.style.cssText = 'border: 1px solid var(--border); padding: 0.5rem; border-radius: 4px; background: var(--surface); display: flex; flex-direction: column; gap: 0.25rem; min-width: 0;';
+
+                        if (comparatorSubMode === 'merge') {
+                            item.innerHTML = `
+                                <div style="font-weight: bold; color: var(--text-hi); font-size: 0.75rem; margin-bottom: 0.2rem; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;" title="${title.replace(/"/g, '&quot;')}">${title}</div>
+                                <label style="display: flex; align-items: center; gap: 0.4rem; cursor: pointer; padding: 0.25rem 0.5rem; border: 1px solid var(--border); border-radius: 3px; background: var(--bg-hard); margin: 0; min-width: 0;">
+                                    <input type="radio" name="diff_${diffId}" value="A" checked style="margin: 0; flex-shrink: 0;">
+                                    <span style="color: var(--muted); font-size: 0.65rem; font-weight: bold; flex-shrink: 0;">A:</span>
+                                    <span style="font-family: 'IBM Plex Mono', monospace; font-size: 0.7rem; color: var(--text-mid); white-space: nowrap; overflow: hidden; text-overflow: ellipsis;" title="${valADisplay.replace(/"/g, '&quot;')}">${valADisplay}</span>
+                                </label>
+                                <label style="display: flex; align-items: center; gap: 0.4rem; cursor: pointer; padding: 0.25rem 0.5rem; border: 1px solid var(--border); border-radius: 3px; background: var(--bg-hard); margin: 0; min-width: 0;">
+                                    <input type="radio" name="diff_${diffId}" value="B" style="margin: 0; flex-shrink: 0;">
+                                    <span style="color: var(--muted); font-size: 0.65rem; font-weight: bold; flex-shrink: 0;">B:</span>
+                                    <span style="font-family: 'IBM Plex Mono', monospace; font-size: 0.7rem; color: var(--text-mid); white-space: nowrap; overflow: hidden; text-overflow: ellipsis;" title="${valBDisplay.replace(/"/g, '&quot;')}">${valBDisplay}</span>
+                                </label>
+                            `;
+                        } else {
+                            item.innerHTML = `
+                                <div style="font-weight: bold; color: var(--text-hi); font-size: 0.75rem; margin-bottom: 0.2rem; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;" title="${title.replace(/"/g, '&quot;')}">${title}</div>
+                                <div style="display: flex; align-items: center; gap: 0.4rem; padding: 0.25rem 0.5rem; border: 1px solid var(--border); border-radius: 3px; background: var(--bg-hard); margin: 0; min-width: 0;">
+                                    <span style="color: var(--muted); font-size: 0.65rem; font-weight: bold; flex-shrink: 0;">A:</span>
+                                    <span style="font-family: 'IBM Plex Mono', monospace; font-size: 0.7rem; color: var(--text-mid); white-space: nowrap; overflow: hidden; text-overflow: ellipsis;" title="${valADisplay.replace(/"/g, '&quot;')}">${valADisplay}</span>
+                                </div>
+                                <div style="display: flex; align-items: center; gap: 0.4rem; padding: 0.25rem 0.5rem; border: 1px solid var(--border); border-radius: 3px; background: var(--bg-hard); margin: 0; min-width: 0;">
+                                    <span style="color: var(--muted); font-size: 0.65rem; font-weight: bold; flex-shrink: 0;">B:</span>
+                                    <span style="font-family: 'IBM Plex Mono', monospace; font-size: 0.7rem; color: var(--text-mid); white-space: nowrap; overflow: hidden; text-overflow: ellipsis;" title="${valBDisplay.replace(/"/g, '&quot;')}">${valBDisplay}</span>
+                                </div>
+                            `;
+                        }
+                        diffView.appendChild(item);
+                    }
 
                     function compareLogicalNodes(path) {
                         const baseNode = astA.get(path);
@@ -1457,10 +1564,17 @@
                                     ];
                                     reportLines.push(block.join('\n') + '\n');
 
-                                    const el = document.createElement('div');
-                                    el.className = 'diff-added';
-                                    el.textContent = block.join('\n') + '\n';
-                                    diffView.appendChild(el);
+                                    addDiffUI(
+                                        `[PROPERTY ADDED] ${path} -> ${rp.name}`,
+                                        `<i>(Not Present)</i>`,
+                                        formatValueForDisplay(rp.value),
+                                        (ast) => {
+                                            const node = ast.get(path);
+                                            if (node) {
+                                                node.valueOf().properties.push({ ...rp });
+                                            }
+                                        }
+                                    );
                                 } else {
                                     const block = [
                                         `[PROPERTY CHANGED] ${path} -> ${rp.name}`,
@@ -1469,10 +1583,18 @@
                                     ];
                                     reportLines.push(block.join('\n') + '\n');
 
-                                    const el = document.createElement('div');
-                                    el.style.color = 'var(--yellow)';
-                                    el.textContent = block.join('\n') + '\n';
-                                    diffView.appendChild(el);
+                                    addDiffUI(
+                                        `[PROPERTY CHANGED] ${path} -> ${rp.name}`,
+                                        formatValueForDisplay(bpVal),
+                                        formatValueForDisplay(rp.value),
+                                        (ast) => {
+                                            const node = ast.get(path);
+                                            if (node) {
+                                                node.valueOf().properties = node.valueOf().properties.filter(p => p.name !== rp.name);
+                                                node.valueOf().properties.push({ ...rp });
+                                            }
+                                        }
+                                    );
                                 }
                             }
                         });
@@ -1492,10 +1614,17 @@
                                     ];
                                     reportLines.push(block.join('\n') + '\n');
 
-                                    const el = document.createElement('div');
-                                    el.className = 'diff-removed';
-                                    el.textContent = block.join('\n') + '\n';
-                                    diffView.appendChild(el);
+                                    addDiffUI(
+                                        `[PROPERTY DELETED] ${path} -> ${bp.name}`,
+                                        formatValueForDisplay(bp.value),
+                                        `<i>(Deleted)</i>`,
+                                        (ast) => {
+                                            const node = ast.get(path);
+                                            if (node) {
+                                                node.valueOf().properties = node.valueOf().properties.filter(p => p.name !== bp.name);
+                                            }
+                                        }
+                                    );
                                 }
                             });
                         }
@@ -1517,10 +1646,17 @@
                                 });
                                 reportLines.push(block.join('\n') + '\n');
 
-                                const el = document.createElement('div');
-                                el.className = 'diff-added';
-                                el.textContent = block.join('\n') + '\n';
-                                diffView.appendChild(el);
+                                addDiffUI(
+                                    `[NODE ADDED] ${childPath}`,
+                                    `<i>(Not Present)</i>`,
+                                    `Node with ${props.length} properties`,
+                                    (ast) => {
+                                        const parent = ast.get(path);
+                                        if (parent) {
+                                            parent.valueOf().children.push(rc);
+                                        }
+                                    }
+                                );
                             } else {
                                 compareLogicalNodes(childPath);
                             }
@@ -1537,10 +1673,17 @@
                                     const block = [`[NODE DELETED] ${childPath}`];
                                     reportLines.push(block.join('\n') + '\n');
 
-                                    const el = document.createElement('div');
-                                    el.className = 'diff-removed';
-                                    el.textContent = block.join('\n') + '\n';
-                                    diffView.appendChild(el);
+                                    addDiffUI(
+                                        `[NODE DELETED] ${childPath}`,
+                                        `Node present`,
+                                        `<i>(Deleted)</i>`,
+                                        (ast) => {
+                                            const parent = ast.get(path);
+                                            if (parent) {
+                                                parent.valueOf().children = parent.valueOf().children.filter(c => c.name !== bc.$name && !c.name.startsWith(bc.$name + '@'));
+                                            }
+                                        }
+                                    );
                                 }
                             });
                         }
@@ -1551,11 +1694,14 @@
                     if (changeCount === 0) {
                         reportLines.push('Result: Files are logically identical. No differences found.');
                         diffView.textContent = 'Files are logically identical. No differences found.';
+                        mergeControls.style.display = 'none';
                     } else {
                         reportLines.push(`\nTotal Differences: ${changeCount}`);
                     }
 
                 } else {
+                    mergeControls.style.display = 'none';
+                    diffView.style.display = 'block';
                     document.getElementById('compare-result-title').textContent = 'DTS Line-by-Line Differences';
                     log('Analyzing line-by-line diff...');
                     const diffResults = diffDtsStrings(dtsA, dtsB);
@@ -1619,6 +1765,65 @@
             a.click();
             URL.revokeObjectURL(url);
             log('Comparison report downloaded.', 'success');
+        });
+
+        const selectAllABtn = document.getElementById('selectAllABtn');
+        const selectAllBBtn = document.getElementById('selectAllBBtn');
+        const generateMergedBtn = document.getElementById('generateMergedBtn');
+
+        selectAllABtn.addEventListener('click', () => {
+            document.querySelectorAll('#compare-diff-view input[type="radio"][value="A"]').forEach(el => el.checked = true);
+        });
+
+        selectAllBBtn.addEventListener('click', () => {
+            document.querySelectorAll('#compare-diff-view input[type="radio"][value="B"]').forEach(el => el.checked = true);
+        });
+
+        generateMergedBtn.addEventListener('click', async () => {
+            if (!currentBaseDTS) return;
+            log('Generating merged Device Tree...', 'info');
+            try {
+                const ast = parseDTS(currentBaseDTS);
+                let appliedCount = 0;
+
+                window.pendingMerges.forEach(merge => {
+                    const radio = document.querySelector(`input[name="diff_${merge.id}"]:checked`);
+                    if (radio && radio.value === 'B') {
+                        merge.applyB(ast);
+                        appliedCount++;
+                    }
+                });
+
+                const patchedDtsString = ast.toString();
+                log(`Applied ${appliedCount} selected changes. Compiling...`, 'info');
+
+                // Determine output format
+                const isBinaryOut = compaFileData.isDtb;
+                const outputName = `merged-${compaFileData.name.split('.').slice(0, -1).join('.')}.${isBinaryOut ? 'dtb' : 'dts'}`;
+
+                let finalData;
+                let mimeType;
+
+                if (isBinaryOut) {
+                    finalData = await convert(patchedDtsString, { outFilename: outputName });
+                    mimeType = 'application/octet-stream';
+                } else {
+                    finalData = patchedDtsString;
+                    mimeType = 'text/plain';
+                }
+
+                const blob = new Blob([finalData], { type: mimeType });
+                const url = URL.createObjectURL(blob);
+                const a = document.createElement('a');
+                a.href = url;
+                a.download = outputName;
+                a.click();
+                URL.revokeObjectURL(url);
+                log(`Merged file "${outputName}" downloaded successfully.`, 'success');
+            } catch (err) {
+                log(`Failed to generate merged file: ${err.message}`, 'error');
+                console.error(err);
+            }
         });
 
         const compareMode = document.getElementById('compareMode');
